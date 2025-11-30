@@ -1,32 +1,78 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>n8n Input Form</title>
+  <title>Project Input</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    input {
+      width: 300px;
+      height: 40px;
+      border-radius: 5px;
+      border: none;
+      padding: 10px;
+      font-size: 18px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 18px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    #responseBox {
+      margin-top: 40px;
+      font-size: 22px;
+      font-weight: bold;
+      color: lightgreen;
+    }
+  </style>
 </head>
 <body>
 
-<h2>Enter your message:</h2>
+  <h1>Please enter <u>News</u>, <u>AQI</u> or <u>Location</u></h1>
 
-<input id="userInput" type="text" placeholder="Type something..." />
-<button onclick="sendToN8N()">Send</button>
+  <input type="text" id="userInput" placeholder="Type here..." />
+  <br>
+  <button onclick="sendData()">Submit</button>
 
-<pre id="response"></pre>
+  <div id="responseBox"></div>
 
-<script>
-  async function sendToN8N() {
-    const inputValue = document.getElementById("userInput").value;
+  <script>
+    async function sendData() {
+      const inputValue = document.getElementById("userInput").value.trim();
+      const responseBox = document.getElementById("responseBox");
 
-    const res = await fetch("https://your-n8n-domain/webhook/user-input", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user_input: inputValue })
-    });
+      if (!inputValue) {
+        responseBox.innerHTML = "❌ Please enter something.";
+        return;
+      }
 
-    const data = await res.json();
-    document.getElementById("response").textContent =
-      JSON.stringify(data, null, 2);
-  }
-</script>
+      responseBox.innerHTML = "⏳ Sending...";
+
+      try {
+        const response = await fetch("https://n8n.srv1140797.hstgr.cloud/webhook-test/News-Time", { 
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: inputValue })
+        });
+
+        const data = await response.json();
+
+        responseBox.innerHTML = `✔ Response: ${data.reply || JSON.stringify(data)}`;
+
+      } catch (error) {
+        responseBox.innerHTML = "❌ Error communicating with server.";
+        console.error(error);
+      }
+    }
+  </script>
 
 </body>
 </html>
