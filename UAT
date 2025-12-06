@@ -1,1 +1,234 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Reco3n</title>
+
+  <!-- Orbitron for header title -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Montserrat for heading, Poppins for body -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #4f8bff;
+      --border: #e6e6e6;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: #1f2937;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--card);
+      padding: 16px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+      z-index: 100;
+    }
+
+    header img {
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-family: "Orbitron", sans-serif;
+      letter-spacing: 1.4px;
+      font-weight: 600;
+      color: #0d1117;
+    }
+
+    /* MAIN SECTION */
+    main {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 760px;
+      background: #ffffffea;
+      border-radius: 10px;
+      padding: 48px 36px;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+      text-align: center;
+    }
+
+    .card h2 {
+      margin: 0 0 28px;
+      font-family: "Montserrat", sans-serif;
+      font-size: 26px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .card h2 u {
+      text-decoration: none;
+      border-bottom: 3px solid rgba(79,139,255,0.25);
+      padding-bottom: 3px;
+    }
+
+    .input-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      max-width: 520px;
+      min-height: 56px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #d9d9de;
+      background: #fff;
+      font-size: 16px;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(79,139,255,0.9);
+      box-shadow: 0 6px 20px rgba(79,139,255,0.15);
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 12px 34px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
+      font-weight: 500;
+      transition: 0.2s ease-in-out;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: #3b73dd;
+    }
+
+    #responseBox {
+      margin-top: 28px;
+      min-height: 28px;
+      font-size: 16px;
+      color: #166534; /* green for success */
+      font-weight: 500;
+    }
+
+    /* FOOTER */
+    footer {
+      flex-shrink: 0;
+      background: var(--card);
+      color: var(--muted);
+      text-align: center;
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+    }
+    
+    @media (max-width:600px){
+      .card { padding: 30px 18px; }
+      .card h2 { font-size: 22px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>Reco3n</h1>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="card">
+      <h2>Choose an option: <u>News</u>, <u>AQI</u> or <u>Location</u></h2>
+
+      <div class="input-wrap">
+        <input id="userInput" type="text" placeholder="Type here..." />
+        <button onclick="sendData()">Submit</button>
+        <div id="responseBox"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    Created by Arjun, Shipra & Nitish
+  </footer>
+
+  <script>
+    async function sendData() {
+      const inputValue = document.getElementById("userInput").value.trim();
+      const responseBox = document.getElementById("responseBox");
+
+      if (!inputValue) {
+        responseBox.style.color = "#b91c1c";
+        responseBox.textContent = "❌ Please enter something.";
+        return;
+      }
+
+      responseBox.style.color = "#0f172a";
+      responseBox.textContent = "⏳ Sending...";
+
+      try {
+        const response = await fetch("https://n8n.srv1140797.hstgr.cloud/webhook/News-Time", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: inputValue })
+        });
+
+        const data = await response.json();
+        responseBox.style.color = "#166534";
+        responseBox.textContent = `✔ Response: ${data.reply || JSON.stringify(data)}`;
+      } catch (error) {
+        responseBox.style.color = "#b91c1c";
+        responseBox.textContent = "❌ Error communicating with server.";
+      }
+    }
+	document.getElementById("userInput").addEventListener("keydown", function (event) {
+  		if (event.key === "Enter") {
+    		event.preventDefault();  // Prevents page refresh
+    		sendData();
+ 	 	}
+	});
+  </script>
+
+</body>
+</html>
