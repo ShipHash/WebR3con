@@ -215,7 +215,7 @@
 
         const data = await response.json();
         responseBox.style.color = "#166534";
-        responseBox.textContent = `✔ Response: ${data.reply || JSON.stringify(data)}`;
+        responseBox.textContent = `${data.reply || JSON.stringify(data)}`;
       } catch (error) {
         responseBox.style.color = "#b91c1c";
         responseBox.textContent = "❌ Error communicating with server.";
