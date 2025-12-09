@@ -224,7 +224,7 @@ let aqiMode = false;
   responseBox.textContent = "⏳ Sending...";
 
   try {
-    const response = await fetch("https://n8n.srv1140797.hstgr.cloud/webhook/6b1247c8-762c-4e41-a5e5-afd4a6ffb1da", {
+    const response = await fetch("https://n8n.srv1140797.hstgr.cloud/webhook/News-Time-UAT", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: finalMessage })
